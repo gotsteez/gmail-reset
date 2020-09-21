@@ -3,14 +3,14 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, ElementNotInteractableException
 from uuid import uuid4
 import logging
 import time
 
 class Tool:
 	def __init__(self):
-		self.driver = webdriver.Chrome("/PATH/TO/CHROME/DRIVER") # Customize with your path to chrome webdriver
+		self.driver = webdriver.Chrome("/home/yungflex/Downloads/chromedriver_linux64/chromedriver") # Customize with your path to chrome webdriver
 
 	def login(self, email, password):
 		self.driver.get("https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?redirect_uri=https%3A%2F%2Fdevelopers.google.com%2Foauthplayground&prompt=consent&response_type=code&client_id=407408718192.apps.googleusercontent.com&scope=email&access_type=offline&flowName=GeneralOAuthFlow")
@@ -23,9 +23,12 @@ class Tool:
 		next_btn = self.driver.find_element_by_xpath("//*[@id=\"identifierNext\"]/div/button")
 		next_btn.click()
 
-		time.sleep(.1)
-		password_field = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, "//*[@id=\"password\"]/div[1]/div/div[1]/input")))
-
+		time.sleep(.5)
+		try:
+			password_field = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, "//*[@id=\"password\"]/div[1]/div/div[1]/input")))
+		except ElementNotInteractableException:
+			password_field = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, "//*[@id=\"password\"]/div[1]/div/div[1]/input")))
+		
 		for i in range(len(password)):
 			password_field.send_keys(password[i])
 			time.sleep(.1)
@@ -51,7 +54,7 @@ class Tool:
 		new_pw = uuid.__str__()
 
 		new_pw_field_0 = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, "//*[@id=\"yDmH0d\"]/c-wiz/div/div[3]/c-wiz/div/div[3]/div[1]/c-wiz/form/div[1]/div/div[1]/div/div[1]/input")))
-		for i in range(len(old_password)):
+		for i in range(len(new_pw)):
 			new_pw_field_0.send_keys(new_pw[i])
 			time.sleep(.1)
 
@@ -70,6 +73,6 @@ class Tool:
 
 if __name__ == "__main__":
 	i = Tool()
-	i.login("", "")
+	i.login("Johnathanlopez197@gmail.com", "21savageyerrr")
 	time.sleep(3)
-	i.change_password("")
+	i.change_password("21savageyerrr")
